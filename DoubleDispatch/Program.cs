@@ -22,6 +22,20 @@
 
             DauntlessCruiser enemyShipInVisualRange = new DauntlessCruiser();
 
+            // 'Dispatch' is a problem of figuring out which methods to call –
+            // specifically, how many pieces of information are required in order to
+            // make the call.
+
+            // Polymorphically: there is a way we can coerce the system to invoke the
+            // correct overload without any runtime checks. A polymorphic call can be
+            // dispatched right to the necessary component. Which in turn can call the
+            // necessary overload. This is called 'double dispatch' because:
+            // 1. First you do a polymorphic call on the actual object
+            // 2. Inside the polymorphic call, you call the overload. Since, inside
+            //    the object, 'this' has a precise type, the right overload is triggered.
+            //    The polymorphic call must be inside each distinct implementation so 
+            //    'this' pointer is suitably typed.
+
             unscannedShip.FireUpon(enemyUnscannedShip);
 
             // The whole business of dynamic was added to C# in order to support dynamically
