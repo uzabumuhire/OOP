@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace DoubleDispatch.Ships
+﻿namespace DoubleDispatch.Ships
 {
+    using System;
+
     public class ImperialShip
     {
         public virtual void FireUpon(ImperialShip enemy)

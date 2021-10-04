@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace DoubleDispatch.Ships
+﻿namespace DoubleDispatch.Ships
 {
+    using System;
+
     public class DauntlessCruiser : ImperialShip
     {
         public override void FireUpon(ImperialShip enemy)

@@ -24,18 +24,21 @@
 
             unscannedShip.FireUpon(enemyUnscannedShip);
 
-            // Single Dispatch behaviour : calls the runtime object with the compile
-            // time parameters. Compile time parameter do not match the runtime
-            // parameter, that's why it's a bug.
-            unscannedShip.FireUpon(enemyScannedShip); 
+            // The whole business of dynamic was added to C# in order to support dynamically
+            // languages. One aspect of some of those languages is the ability to dynamically
+            // dispatch, i.e., to make call decisions at runtime as opposed to compile-time.
+
+            // By casting a variable to dynamic, we defer dispatch decisions until runtime. 
+            // Thus, we get the correct calls happening.
+
+            // Support of double dispatch by using the dynamic keyword.
+            unscannedShip.FireUpon((dynamic)enemyScannedShip); 
 
             unscannedShip.FireUpon(enemyShipInVisualRange);
             scannedShip.FireUpon(enemyUnscannedShip);
 
-            // Single Dispatch behaviour : calls the runtime object with the compile
-            // time parameters. Compile time parameter do not match the runtime
-            // parameter, that's why it's a bug.
-            scannedShip.FireUpon(enemyScannedShip);
+            // Support of double dispatch by using the dynamic keyword
+            scannedShip.FireUpon((dynamic)enemyScannedShip);
 
             scannedShip.FireUpon(enemyShipInVisualRange);
         }
