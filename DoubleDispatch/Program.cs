@@ -1,15 +1,22 @@
 ﻿namespace DoubleDispatch
 {
     using System;
+    using System.Collections.Generic;
 
     using Ships;
-
+    using Shapes;
+    
     class Program
     {
         static void Main(string[] args)
         {
             PrintInfo("SHIPS");
             RunShips();
+
+            PrintInfo("SHAPES");
+
+            PrintInfo("Polymorphic shapes : ");
+            DrawPolymorphicShapes();
         }
 
         static void RunShips()
@@ -49,6 +56,30 @@
             enemyUnscannedShip.FiredUponBy(scannedShip);
             enemyScannedShip.FiredUponBy(scannedShip);
             enemyShipInVisualRange.FiredUponBy(scannedShip);
+        }
+
+        static void DrawPolymorphicShapes()
+        {
+            // A hierarchy of shapes are defined with each of the derived
+            // types overloading a base virtual Draw() method.
+
+            // Note that the proper Draw() method is called for each item
+            // in the collection.  In most object-oriented languages, this
+            // polymorphic behavior is achieved through the use of a virtual
+            // table consulted at run-time to derive the proper offset
+            // address for an object’s method.  This behavior is referred
+            // to as “Dynamic Dispatch” or “Single Dispatch”.
+
+            var shapes = new List<Shape>
+            {
+                new Shape(),
+                new Polygon(),
+                new Quadrilateral(),
+                new Rectangle()
+            };
+
+            foreach (var shape in shapes)
+                shape.Draw();
         }
 
         static void PrintInfo(string info)
