@@ -36,25 +36,19 @@
             //    The polymorphic call must be inside each distinct implementation so 
             //    'this' pointer is suitably typed.
 
-            unscannedShip.FireUpon(enemyUnscannedShip);
+            // Double dispatch is when methods are dispatched based on the run time (or
+            // dynamic) type of two things; the object being called and its parameters.
 
-            // The whole business of dynamic was added to C# in order to support dynamically
-            // languages. One aspect of some of those languages is the ability to dynamically
-            // dispatch, i.e., to make call decisions at runtime as opposed to compile-time.
+            // Single disaptch only pays attention to the type of one thing, the object
+            // that the method was called upon. For the arguments, it just uses the 
+            // compile time types. 
 
-            // By casting a variable to dynamic, we defer dispatch decisions until runtime. 
-            // Thus, we get the correct calls happening.
-
-            // Support of double dispatch by using the dynamic keyword.
-            unscannedShip.FireUpon((dynamic)enemyScannedShip); 
-
-            unscannedShip.FireUpon(enemyShipInVisualRange);
-            scannedShip.FireUpon(enemyUnscannedShip);
-
-            // Support of double dispatch by using the dynamic keyword
-            scannedShip.FireUpon((dynamic)enemyScannedShip);
-
-            scannedShip.FireUpon(enemyShipInVisualRange);
+            enemyUnscannedShip.FiredUponBy(unscannedShip);
+            enemyScannedShip.FiredUponBy(unscannedShip);
+            enemyShipInVisualRange.FiredUponBy(unscannedShip);
+            enemyUnscannedShip.FiredUponBy(scannedShip);
+            enemyScannedShip.FiredUponBy(scannedShip);
+            enemyShipInVisualRange.FiredUponBy(scannedShip);
         }
 
         static void PrintInfo(string info)
