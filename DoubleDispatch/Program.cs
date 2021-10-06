@@ -4,7 +4,9 @@
     using System.Collections.Generic;
 
     using Ships;
-    using Shapes;
+    using Polymorphic = Shapes.Polymorphic;
+    using Overloaded = Shapes.Overloaded
+    ;
     
     class Program
     {
@@ -17,6 +19,10 @@
 
             PrintInfo("Polymorphic shapes : ");
             DrawPolymorphicShapes();
+
+
+            PrintInfo("Overloaded shapes :");
+            DrawOverloadedShapes();
         }
 
         static void RunShips()
@@ -70,16 +76,34 @@
             // address for an object’s method.  This behavior is referred
             // to as “Dynamic Dispatch” or “Single Dispatch”.
 
-            var shapes = new List<Shape>
+            var shapes = new List<Polymorphic.Shape>
             {
-                new Shape(),
-                new Polygon(),
-                new Quadrilateral(),
-                new Rectangle()
+                new Polymorphic.Shape(),
+                new Polymorphic.Polygon(),
+                new Polymorphic.Quadrilateral(),
+                new Polymorphic.Rectangle()
             };
 
             foreach (var shape in shapes)
                 shape.Draw();
+        }
+
+        static void DrawOverloadedShapes()
+        {
+            // Note that the parameter type determines which Draw() method is invoked.
+            var shape = new Overloaded.Shape();
+            shape.Draw(new Overloaded.Surface());
+            shape.Draw(new Overloaded.EtchASketch());
+
+            var s = new Overloaded.Shape();
+            Overloaded.Surface surface = new Overloaded.Surface();
+            Overloaded.Surface etchASktech = new Overloaded.EtchASketch();
+            s.Draw(surface);
+
+            // The issue here is that the method to call was determined statically at
+            // compile time based upon the reference type, not at run-time based
+            // upon the object type.
+            s.Draw(etchASktech);
         }
 
         static void PrintInfo(string info)

@@ -1,4 +1,4 @@
-﻿namespace DoubleDispatch.Shapes
+﻿namespace DoubleDispatch.Shapes.Polymorphic
 {
     using System;
 
