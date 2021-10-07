@@ -7,7 +7,8 @@
     using Polymorphic = Shapes.Polymorphic;
     using Overloaded = Shapes.Overloaded;
     using PSB = Shapes.PolymorphicStaticBinding;
-    
+    using DD = Shapes.DoubleDispatch;
+
     class Program
     {
         static void Main(string[] args)
@@ -17,15 +18,17 @@
 
             PrintInfo("SHAPES");
 
-            PrintInfo("Polymorphic shapes : ");
+            PrintInfo("Polymorphism : ");
             DrawPolymorphicShapes();
 
-
-            PrintInfo("Overloaded shapes :");
+            PrintInfo("Overloading :");
             DrawOverloadedShapes();
 
-            PrintInfo("Polymorphic static binding shapes : ");
-            DrawShapesUsingPolymorphicStaticBinding();
+            PrintInfo("Polymorphic static binding : ");
+            DrawShapesOnSurfacesUsingPolymorphicStaticBinding();
+
+            PrintInfo("Double Dispatch : ");
+            DrawShapesOnSurfacesUsingDoubleDispatch();
         }
 
         static void RunShips()
@@ -70,7 +73,7 @@
         static void DrawPolymorphicShapes()
         {
             // A hierarchy of shapes are defined with each of the derived
-            // types overloading a base virtual Draw() method.
+            // types overriding a base virtual Draw() method.
 
             // Note that the proper Draw() method is called for each item
             // in the collection.  In most object-oriented languages, this
@@ -109,7 +112,7 @@
             s.Draw(etchASktech);
         }
 
-        static void DrawShapesUsingPolymorphicStaticBinding()
+        static void DrawShapesOnSurfacesUsingPolymorphicStaticBinding()
         {
             var shape = new PSB.Shape();
             PSB.Surface surface = new PSB.Surface();
@@ -126,12 +129,48 @@
 
             //  Achieves the desired result by effectively wrapping the static-dispatched
             //  method invocation (i.e. Shape.Draw()) within a virtual-dispatch method
-            //  invocation (i.e. Surface.Draw() and EtchASketch.Draw()).  This causes the
+            //  invocation (i.e. Surface.Draw() and EtchASketch.Draw()). This causes the
             //  static Shape.Draw() method invocation to be determined by which virtual
             //  Surface.Draw() method invocation is executed.
 
             surface.Draw(shape);
             etchASktech.Draw(shape);
+        }
+
+        static void DrawShapesOnSurfacesUsingDoubleDispatch()
+        {
+            // To demonstrate Double Dispatch, the techniques from both the polymorphism
+            // example and the polymorphic static binding example need to be combined.
+
+            // A hierarchy of Surface types and a hierarchy of Shape types. Each Shape
+            // type contains an overloaded virtual Draw() method which contains the logic
+            // for how the shape is to be drawn on a particular surface. We use the
+            // polymorphic static binding technique here to ensure the proper overload
+            // is called for each surface type.
+
+            // Virtual dispatch occurs twice for each call to one of the Surface references:
+            // Once when the Surface.Draw() virtual method is called and again when either
+            // calls the Shape.Draw() overloaded virtual method. Note again that while the
+            // second virtual dispatch is based on the type of Shape instance, the overloaded
+            // method called is still determined statically based upon the reference type.
+
+            var shape = new DD.Shape();
+            DD.Surface surface = new DD.Surface();
+            DD.Surface etchASktech = new DD.EtchASketch();
+
+            var shapes = new List<DD.Shape>
+            {
+                new DD.Shape(),
+                new DD.Polygon(),
+                new DD.Quadrilateral(),
+                new DD.Rectangle()
+            };
+
+            foreach (var s in shapes)
+            {
+                surface.Draw(s);
+                etchASktech.Draw(s);
+            }
         }
 
         static void PrintInfo(string info)
