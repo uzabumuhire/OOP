@@ -5,8 +5,8 @@
 
     using Ships;
     using Polymorphic = Shapes.Polymorphic;
-    using Overloaded = Shapes.Overloaded
-    ;
+    using Overloaded = Shapes.Overloaded;
+    using PSB = Shapes.PolymorphicStaticBinding;
     
     class Program
     {
@@ -23,6 +23,9 @@
 
             PrintInfo("Overloaded shapes :");
             DrawOverloadedShapes();
+
+            PrintInfo("Polymorphic static binding shapes : ");
+            DrawShapesUsingPolymorphicStaticBinding();
         }
 
         static void RunShips()
@@ -104,6 +107,31 @@
             // compile time based upon the reference type, not at run-time based
             // upon the object type.
             s.Draw(etchASktech);
+        }
+
+        static void DrawShapesUsingPolymorphicStaticBinding()
+        {
+            var shape = new PSB.Shape();
+            PSB.Surface surface = new PSB.Surface();
+            PSB.Surface etchASktech = new PSB.EtchASketch();
+
+            // Polymorphic static binding is a technique where static method invocations
+            // are determined at run-time through the use of polymorphism.
+
+            // Add a new Draw(Shape shape) method to the Surface and EtchASketch types
+            // which call shape.Draw() with a reference to the current object.
+
+            // To invoke the correct Shape.Draw() method, call the desired method
+            // indirectly through a Surface reference.
+
+            //  Achieves the desired result by effectively wrapping the static-dispatched
+            //  method invocation (i.e. Shape.Draw()) within a virtual-dispatch method
+            //  invocation (i.e. Surface.Draw() and EtchASketch.Draw()).  This causes the
+            //  static Shape.Draw() method invocation to be determined by which virtual
+            //  Surface.Draw() method invocation is executed.
+
+            surface.Draw(shape);
+            etchASktech.Draw(shape);
         }
 
         static void PrintInfo(string info)
