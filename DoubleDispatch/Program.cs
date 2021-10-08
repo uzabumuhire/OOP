@@ -9,22 +9,28 @@
     using PSB = Shapes.PolymorphicStaticBinding;
     using DD = Shapes.DoubleDispatch;
     using LC = Shapes.LowCoupling;
+    using SemiOOP = MathExpressions.SemiOOP;
 
     class Program
     {
-        // Since Double Dispatch is a technique for calling virtual overloaded
-        // methods based upon parameter types which exist within an inheritance
-        // hierarchy, its use may be a symptom that the Open/Closed and/or Single
-        // Responsibility principles are being violated, or that responsibilities
-        // may otherwise be misaligned.  This is not to say that every case of
-        // Double Dispatch means something is amiss, but only that its use should
-        // be a flag to reconsider your design in light of future maintenance needs.
+        
         static void Main(string[] args)
         {
             PrintInfo("SHIPS");
             RunShips();
 
             PrintInfo("SHAPES");
+
+            // See Derek Greer article on LosTechies.com :
+            // https://lostechies.com/derekgreer/2010/04/19/double-dispatch-is-a-code-smell/
+
+            // Since Double Dispatch is a technique for calling virtual overloaded
+            // methods based upon parameter types which exist within an inheritance
+            // hierarchy, its use may be a symptom that the Open/Closed and/or Single
+            // Responsibility principles are being violated, or that responsibilities
+            // may otherwise be misaligned.  This is not to say that every case of
+            // Double Dispatch means something is amiss, but only that its use should
+            // be a flag to reconsider your design in light of future maintenance needs.
 
             PrintInfo("Polymorphism : ");
             DrawPolymorphicShapes();
@@ -40,8 +46,19 @@
 
             PrintInfo("Low Coupling :");
             DrawShapesDecoupledFromSurfaces();
+
+
+            PrintInfo("MATHEMATICAL EXPRESSIONS");
+
+            // See Vasil Kosturski article on his blog (vkontech.com) :
+            // https://vkontech.com/clash-of-styles-part-5-double-dispatch-or-when-to-abandon-oop/
+
+            PrintInfo("Semi OOP");
+            CalculateMathExpressionsUsingSemiOOP();
+
         }
 
+        #region Ships
         static void RunShips()
         {
             ImperialShip unscannedShip = new ImperialShip();
@@ -80,7 +97,9 @@
             enemyScannedShip.FiredUponBy(scannedShip);
             enemyShipInVisualRange.FiredUponBy(scannedShip);
         }
+        #endregion
 
+        #region Shapes
         static void DrawPolymorphicShapes()
         {
             // A hierarchy of shapes are defined with each of the derived
@@ -253,10 +272,25 @@
                     Console.WriteLine(Environment.NewLine);
                 }
         }
+        #endregion
 
+        #region MathExpressions
+        static void CalculateMathExpressionsUsingSemiOOP()
+        {
+            var intValue = new SemiOOP.IntValue(3);
+            var rationaValue = new SemiOOP.RationalValue(1, 3);
+
+            var addition = new SemiOOP.Addition(intValue, rationaValue);
+
+            Console.WriteLine($"{addition.Stringify()} = {addition.Eval().Stringify()}");
+        }
+        #endregion
+
+        #region Utilities
         static void PrintInfo(string info)
         {
             Console.WriteLine($"{Environment.NewLine}{info}{Environment.NewLine}");
         }
+        #endregion
     }
 }
