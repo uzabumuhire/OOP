@@ -8,10 +8,17 @@
     using Overloaded = Shapes.Overloaded;
     using PSB = Shapes.PolymorphicStaticBinding;
     using DD = Shapes.DoubleDispatch;
-    //using LC = Shapes.LowCoupling;
+    using LC = Shapes.LowCoupling;
 
     class Program
     {
+        // Since Double Dispatch is a technique for calling virtual overloaded
+        // methods based upon parameter types which exist within an inheritance
+        // hierarchy, its use may be a symptom that the Open/Closed and/or Single
+        // Responsibility principles are being violated, or that responsibilities
+        // may otherwise be misaligned.  This is not to say that every case of
+        // Double Dispatch means something is amiss, but only that its use should
+        // be a flag to reconsider your design in light of future maintenance needs.
         static void Main(string[] args)
         {
             PrintInfo("SHIPS");
@@ -32,7 +39,7 @@
             DrawShapesOnSurfacesUsingDoubleDispatch();
 
             PrintInfo("Low Coupling :");
-            DrawLowCoupledShapes();
+            DrawShapesDecoupledFromSurfaces();
         }
 
         static void RunShips()
@@ -177,7 +184,7 @@
             }
         }
 
-        static void DrawLowCoupledShapes()
+        static void DrawShapesDecoupledFromSurfaces()
         {
             // The problem isn’t so much with Double Dispatch, but what design
             // choices might be leading to reliance upon the technique. Consider
@@ -198,11 +205,58 @@
             // less resilient to future changes as well as being more difficult to
             // extend.
 
+            // Several new concepts have been introduced to facilitate decoupling:
+            // line segments, points, and brushes.
+
+            // By changing the Shape objects to be defined in terms of line segments,
+            // knowledge is removed from the shape concerning how to draw itself on
+            // any particular surface.  Additionally, the Surface type now encapsulates
+            // a collection of line segments to simulate the lines being drawn onto
+            // the surface.  To handle drawing the line segments onto the surfaces,
+            // we’ve introduced a Brush type which “draws” the line segments onto
+            // a surface in its own peculiar way.  To configure which brushes are to be
+            // used with which surface, we define a dictionary matching surfaces to
+            // brushes.
+
+            // In contrast to the Double Dispatch example, none of the existing types
+            // need to be modified to add new surfaces, shapes, or brushes.
+
+            var brushDictionary = new Dictionary<Type, LC.IBrush>();
+
+            brushDictionary.Add(typeof(LC.Paper), new LC.Pencil());
+            brushDictionary.Add(typeof(LC.EtchASketch), new LC.EtchASketchKnobs());
+
+            var surfaces = new List<LC.ISurface>
+            {
+                new LC.Paper(),
+                new LC.EtchASketch()
+            };
+
+            var shapes = new List<LC.IShape>
+            {
+                new LC.Polygon(),
+                new LC.Quadrilateral(),
+                new LC.Parallelogram(),
+                new LC.Rectangle()
+            };
+
+            foreach (var surface in surfaces)
+                foreach (var shape in shapes)
+                {
+                    Console.WriteLine(
+                        string.Format("Drawing a {0} on the {1} ...", 
+                            shape.GetType().Name,
+                            surface.GetType().Name));
+
+                    brushDictionary[surface.GetType()].Draw(surface, shape.GetLineSegments());
+
+                    Console.WriteLine(Environment.NewLine);
+                }
         }
 
         static void PrintInfo(string info)
         {
-            Console.WriteLine($"\n{info}\n");
+            Console.WriteLine($"{Environment.NewLine}{info}{Environment.NewLine}");
         }
     }
 }
