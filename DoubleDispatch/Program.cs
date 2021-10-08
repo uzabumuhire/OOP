@@ -8,6 +8,7 @@
     using Overloaded = Shapes.Overloaded;
     using PSB = Shapes.PolymorphicStaticBinding;
     using DD = Shapes.DoubleDispatch;
+    //using LC = Shapes.LowCoupling;
 
     class Program
     {
@@ -29,6 +30,9 @@
 
             PrintInfo("Double Dispatch : ");
             DrawShapesOnSurfacesUsingDoubleDispatch();
+
+            PrintInfo("Low Coupling :");
+            DrawLowCoupledShapes();
         }
 
         static void RunShips()
@@ -171,6 +175,29 @@
                 surface.Draw(s);
                 etchASktech.Draw(s);
             }
+        }
+
+        static void DrawLowCoupledShapes()
+        {
+            // The problem isn’t so much with Double Dispatch, but what design
+            // choices might be leading to reliance upon the technique. Consider
+            // for instance the hierarchy of shape types in our Double Dispatch
+            // example.  What happens if we want to add a new surface?  In this
+            // case, each of the shape types will need to be modified to add
+            // knowledge of the new Surface type.  This violates OCP (Open/Closed
+            // Principle), and in this case in a particularly egregious way (i.e.
+            // Its violation is multiplied by the number of shape types we have).
+            // Additionally, it violates SRP (Single Responsibility Principle).
+            // Changes to how shapes are drawn on a particular surface are likely
+            // to differ from surface to surface, thereby leading our shape objects
+            // to change for different reasons.
+
+            // The presence of Double Dispatch generally means that each type in a
+            // hierarchy has special handling code within another hierarchy of types.
+            // This approach to representing variant behavior leads to code that is
+            // less resilient to future changes as well as being more difficult to
+            // extend.
+
         }
 
         static void PrintInfo(string info)
