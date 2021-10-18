@@ -10,6 +10,7 @@
     using DD = Shapes.DoubleDispatch;
     using LC = Shapes.LowCoupling;
     using SemiOOP = MathExpressions.SemiOOP;
+    using PureOOP = MathExpressions.PureOOP;
 
     class Program
     {
@@ -17,6 +18,10 @@
         static void Main(string[] args)
         {
             PrintInfo("SHIPS");
+
+            // See Phil L. artile on Naimuri.com :
+            // https://www.naimuri.com/what-even-is-double-dispatch/
+
             RunShips();
 
             PrintInfo("SHAPES");
@@ -44,7 +49,7 @@
             PrintInfo("Double Dispatch : ");
             DrawShapesOnSurfacesUsingDoubleDispatch();
 
-            PrintInfo("Low Coupling :");
+            PrintInfo("Low Coupling : ");
             DrawShapesDecoupledFromSurfaces();
 
 
@@ -52,13 +57,16 @@
 
             // See Vasil Kosturski article on his blog (vkontech.com) :
             // https://vkontech.com/clash-of-styles-part-5-double-dispatch-or-when-to-abandon-oop/
+            // https://vkontech.com/polymorphism-on-steroids-dive-into-multiple-dispatch-multimethods/
 
-            PrintInfo("Semi OOP");
+            PrintInfo("Semi OOP (Pattern Matching) : ");
             CalculateMathExpressionsUsingSemiOOP();
 
+            PrintInfo("Pure OOP (Double Dispatch) : ");
+            CalculateMathExpressionUsingPureOOP();
         }
 
-        #region Ships
+        #region ShipsExample
         static void RunShips()
         {
             ImperialShip unscannedShip = new ImperialShip();
@@ -99,7 +107,7 @@
         }
         #endregion
 
-        #region Shapes
+        #region ShapesExample
         static void DrawPolymorphicShapes()
         {
             // A hierarchy of shapes are defined with each of the derived
@@ -274,15 +282,30 @@
         }
         #endregion
 
-        #region MathExpressions
+        #region MathExpressionsExample
         static void CalculateMathExpressionsUsingSemiOOP()
         {
             var intValue = new SemiOOP.IntValue(3);
-            var rationaValue = new SemiOOP.RationalValue(1, 3);
+            var rationalValue = new SemiOOP.RationalValue(1, 3);
 
-            var addition = new SemiOOP.Addition(intValue, rationaValue);
-
+            var addition = new SemiOOP.Addition(intValue, rationalValue);
             Console.WriteLine($"{addition.Stringify()} = {addition.Eval().Stringify()}");
+
+            var anotherAddition = new SemiOOP.Addition(rationalValue, intValue);
+            Console.WriteLine($"{anotherAddition.Stringify()} = {anotherAddition.Eval().Stringify()}");
+
+        }
+
+        static void CalculateMathExpressionUsingPureOOP()
+        {
+            var intValue = new PureOOP.IntValue(3);
+            var rationaValue = new PureOOP.RationalValue(1, 3);
+
+            var addition = new PureOOP.Addition(intValue, rationaValue);
+            Console.WriteLine($"{addition.Stringify()} = {addition.Eval().Stringify()}");
+
+            var anotherAddition = new PureOOP.Addition(rationaValue, intValue);
+            Console.WriteLine($"{anotherAddition.Stringify()} = {anotherAddition.Eval().Stringify()}");
         }
         #endregion
 
