@@ -24,7 +24,9 @@ namespace DoubleDispatch.MathExpressions.SemiOOP
             switch (operand)
             {
                 case IntValue op:
-                    return new IntValue(this.Denominator * op.Value + this.Numerator);
+                    return new RationalValue(
+                        this.Denominator * op.Value + this.Numerator,
+                        this.Denominator);
                 case RationalValue op:
                     return new RationalValue(
                         this.Numerator * op.Denominator + op.Numerator * this.Denominator,
